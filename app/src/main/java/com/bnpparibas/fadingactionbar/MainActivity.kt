@@ -61,7 +61,8 @@ class MainActivity : AppCompatActivity() {
 
         scroll_view.setOnScrollViewListener(object : ScrollViewX.OnScrollViewListener {
             override fun onScrollChanged(v: ScrollViewX?, l: Int, t: Int, oldl: Int, oldt: Int) {
-                cd.alpha = getAlphaforActionBar(v!!.scrollY)
+
+                cd.alpha = getNewAlpha(t)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     window.statusBarColor = cd.color
                 }
@@ -69,18 +70,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun getAlphaforActionBar(scrollY: Int): Int {
-        val minDist = 0
-        val maxDist = 850
-        if (scrollY > maxDist) {
-            return 255
-        } else if (scrollY < minDist) {
-            return 0
-        } else {
-            var alpha = 0
-            alpha = (255.0 / maxDist * scrollY).toInt()
-            return alpha
-        }
+    private fun getNewAlpha(t: Int): Int {
+        val headerHeight = header_cover.height - supportActionBar!!.height
+        val ratio = Math.min(Math.max(t, 0), headerHeight).toFloat() / headerHeight
+        val newAlpha = (ratio * 255).toInt()
+        return newAlpha
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
